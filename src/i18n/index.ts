@@ -24,6 +24,9 @@ const deviceLocale = normalizeLocale(Localization.getLocales()[0]?.languageTag ?
 i18n
   .use(initReactI18next)
   .init({
+    // Hermes(React Native) 에는 Intl.PluralRules 가 완전히 구현되어 있지 않으므로
+    // Intl 에 의존하지 않는 레거시 복수형 규칙(v3)을 사용.
+    compatibilityJSON: 'v3',
     resources,
     lng: deviceLocale,
     fallbackLng: FALLBACK_LOCALE,
