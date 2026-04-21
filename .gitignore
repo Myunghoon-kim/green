@@ -56,6 +56,9 @@ Desktop.ini
 *.swo
 *~
 
+# Claude Code local config
+.claude/
+
 # Environment variables
 .env
 .env.local

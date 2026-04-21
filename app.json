@@ -1,0 +1,45 @@
+{
+  "expo": {
+    "name": "Green",
+    "slug": "green",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.green.feeding",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "수유 기록을 음성으로 입력하기 위해 마이크를 사용합니다.",
+        "NSSpeechRecognitionUsageDescription": "음성을 텍스트로 변환하여 수유 기록으로 저장합니다."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.green.feeding",
+      "permissions": ["android.permission.RECORD_AUDIO"]
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow Green to use the microphone for voice recording.",
+          "speechRecognitionPermission": "Allow Green to use speech recognition to transcribe your voice."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

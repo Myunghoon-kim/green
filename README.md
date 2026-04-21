@@ -2,6 +2,14 @@
 
 아기 수유 기록을 **음성 인식**으로 빠르게 입력하고, **도표**로 한눈에 확인하는 크로스플랫폼 모바일 앱입니다.
 
+## 관련 문서
+
+- [COMMIT_CONVENTION.md](COMMIT_CONVENTION.md) — Conventional Commits 커밋 규칙
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — 레이어드 아키텍처·SOLID·디자인 패턴·ADR
+- [docs/TDD.md](docs/TDD.md) — TDD 전략과 레이어별 커버리지 목표
+- [docs/planning/](docs/planning/) — 기능별 기획 문서 (음성 기록, 기록 목록, 통계)
+- 각 `src/` 하위 폴더의 `README.md` — 해당 폴더의 역할·규칙
+
 ---
 
 ## 핵심 기능

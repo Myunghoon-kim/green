@@ -1,0 +1,55 @@
+{
+  "app": {
+    "name": "Green"
+  },
+  "tabs": {
+    "home": "Home",
+    "history": "History",
+    "stats": "Stats"
+  },
+  "home": {
+    "title": "Feeding Log",
+    "subtitle": "Tap the microphone and speak",
+    "startRecording": "Start recording",
+    "stopRecording": "Stop recording",
+    "listening": "Listening...",
+    "processing": "Processing...",
+    "saved": "Saved"
+  },
+  "history": {
+    "title": "History",
+    "empty": "No records yet",
+    "filters": {
+      "today": "Today",
+      "week": "This week",
+      "all": "All"
+    },
+    "delete": "Delete",
+    "edit": "Edit"
+  },
+  "stats": {
+    "title": "Statistics",
+    "daily": "Daily count",
+    "weekly": "Weekly total",
+    "avgInterval": "Average interval"
+  },
+  "feeding": {
+    "side": {
+      "left": "Left",
+      "right": "Right",
+      "both": "Both"
+    },
+    "source": {
+      "voice": "Voice",
+      "manual": "Manual"
+    },
+    "minutes": "{{count}} min",
+    "ml": "{{count}} ml"
+  },
+  "errors": {
+    "permissionDenied": "Microphone permission is required",
+    "recognitionFailed": "Could not recognize speech",
+    "saveFailed": "Failed to save",
+    "generic": "An error occurred"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "app": {
+    "name": "Green"
+  },
+  "tabs": {
+    "home": "홈",
+    "history": "기록",
+    "stats": "통계"
+  },
+  "home": {
+    "title": "수유 기록",
+    "subtitle": "마이크를 눌러 말하세요",
+    "startRecording": "녹음 시작",
+    "stopRecording": "녹음 중지",
+    "listening": "듣는 중...",
+    "processing": "처리 중...",
+    "saved": "저장되었습니다"
+  },
+  "history": {
+    "title": "기록 목록",
+    "empty": "아직 기록이 없습니다",
+    "filters": {
+      "today": "오늘",
+      "week": "이번 주",
+      "all": "전체"
+    },
+    "delete": "삭제",
+    "edit": "편집"
+  },
+  "stats": {
+    "title": "통계",
+    "daily": "일별 횟수",
+    "weekly": "주별 총량",
+    "avgInterval": "평균 수유 간격"
+  },
+  "feeding": {
+    "side": {
+      "left": "왼쪽",
+      "right": "오른쪽",
+      "both": "양쪽"
+    },
+    "source": {
+      "voice": "음성",
+      "manual": "수동"
+    },
+    "minutes": "{{count}}분",
+    "ml": "{{count}}ml"
+  },
+  "errors": {
+    "permissionDenied": "마이크 권한이 필요합니다",
+    "recognitionFailed": "음성을 인식하지 못했습니다",
+    "saveFailed": "저장에 실패했습니다",
+    "generic": "오류가 발생했습니다"
+  }
+}
