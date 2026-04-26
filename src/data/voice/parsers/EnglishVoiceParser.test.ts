@@ -15,8 +15,12 @@ describe('EnglishVoiceParser', () => {
     expect(parser.parse('both 20 mins')).toEqual({ side: 'both', durationMinutes: 20 });
   });
 
-  it('formula 80ml → amountMl 80', () => {
-    expect(parser.parse('formula 80ml')).toEqual({ amountMl: 80 });
+  it('formula 80ml → amountMl 80, feedingType formula', () => {
+    expect(parser.parse('formula 80ml')).toEqual({ amountMl: 80, feedingType: 'formula' });
+  });
+
+  it('breastfeeding 15 minutes → feedingType breast', () => {
+    expect(parser.parse('breastfeeding 15 minutes').feedingType).toBe('breast');
   });
 
   it('대소문자는 무시한다', () => {

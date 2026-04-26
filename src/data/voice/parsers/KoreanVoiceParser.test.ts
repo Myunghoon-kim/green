@@ -57,7 +57,11 @@ describe('KoreanVoiceParser', () => {
 
     it('양만 있는 분유 기록도 처리한다', () => {
       const r = parser.parse('분유 80ml');
-      expect(r).toEqual({ amountMl: 80 });
+      expect(r).toEqual({ amountMl: 80, feedingType: 'formula' });
+    });
+
+    it('"모유" 단어가 있으면 feedingType=breast 로 추출한다', () => {
+      expect(parser.parse('왼쪽 모유 15분').feedingType).toBe('breast');
     });
   });
 

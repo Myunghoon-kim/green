@@ -13,6 +13,10 @@ const generateId = (): string =>
 
 export type FeedingSide = 'left' | 'right' | 'both';
 export type FeedingSource = 'voice' | 'manual';
+export type FeedingType = 'formula' | 'breast';
+
+/** 미지정 시 기본 수유 타입. 분유 수유가 일반적이므로 formula 기본값. */
+export const DEFAULT_FEEDING_TYPE: FeedingType = 'formula';
 
 /** 저장·전달 시 사용하는 평면 데이터 구조 (직렬화 가능). */
 export type FeedingRecordData = {
@@ -23,9 +27,10 @@ export type FeedingRecordData = {
   side?: FeedingSide;
   note?: string;
   source: FeedingSource;
+  feedingType: FeedingType;
 };
 
-/** 생성 시 전달하는 입력. id/timestamp/source 는 기본값 제공. */
+/** 생성 시 전달하는 입력. id/timestamp/source/feedingType 는 기본값 제공. */
 export type FeedingRecordInput = {
   id?: string;
   timestamp?: number;
@@ -34,6 +39,7 @@ export type FeedingRecordInput = {
   side?: FeedingSide;
   note?: string;
   source?: FeedingSource;
+  feedingType?: FeedingType;
 };
 
 export class FeedingRecord {
@@ -44,6 +50,7 @@ export class FeedingRecord {
   public readonly side?: FeedingSide;
   public readonly note?: string;
   public readonly source: FeedingSource;
+  public readonly feedingType: FeedingType;
 
   constructor(input: FeedingRecordInput) {
     this.id = input.id ?? generateId();
@@ -53,6 +60,7 @@ export class FeedingRecord {
     this.side = input.side;
     this.note = input.note;
     this.source = input.source ?? 'manual';
+    this.feedingType = input.feedingType ?? DEFAULT_FEEDING_TYPE;
 
     this.validate();
   }
@@ -105,6 +113,7 @@ export class FeedingRecord {
       ...(this.side !== undefined && { side: this.side }),
       ...(this.note !== undefined && { note: this.note }),
       source: this.source,
+      feedingType: this.feedingType,
     };
   }
 
@@ -137,9 +146,13 @@ export class FeedingRecord {
       side: isFeedingSide(r.side) ? r.side : undefined,
       note: typeof r.note === 'string' ? r.note : undefined,
       source: r.source,
+      // 구 저장소 호환 — feedingType 이 없던 레코드는 기본값(formula)으로 복원.
+      feedingType: isFeedingType(r.feedingType) ? r.feedingType : DEFAULT_FEEDING_TYPE,
     });
   }
 }
 
 const isFeedingSide = (v: unknown): v is FeedingSide =>
   v === 'left' || v === 'right' || v === 'both';
+
+const isFeedingType = (v: unknown): v is FeedingType => v === 'formula' || v === 'breast';

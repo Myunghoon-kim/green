@@ -16,6 +16,7 @@ const FeedingCard: React.FC<FeedingCardProps> = ({ record }) => {
   const { t } = useTranslation();
 
   const timeLabel = format(new Date(record.timestamp), 'HH:mm');
+  const typeLabel = t(`feeding.type.${record.feedingType}`);
   const sideLabel = record.side ? t(`feeding.side.${record.side}`) : null;
   const durationLabel =
     record.durationMinutes !== undefined
@@ -24,6 +25,9 @@ const FeedingCard: React.FC<FeedingCardProps> = ({ record }) => {
   const amountLabel =
     record.amountMl !== undefined ? t('feeding.ml', { count: record.amountMl }) : null;
 
+  // 분유/모유 칩은 시각 구분을 위해 색을 달리.
+  const typeChipStyle = record.feedingType === 'breast' ? styles.chipBreast : styles.chip;
+
   return (
     <View style={styles.card}>
       <View style={styles.row}>
@@ -31,6 +35,7 @@ const FeedingCard: React.FC<FeedingCardProps> = ({ record }) => {
         <Text style={styles.source}>{t(`feeding.source.${record.source}`)}</Text>
       </View>
       <View style={styles.row}>
+        <Text style={typeChipStyle}>{typeLabel}</Text>
         {sideLabel && <Text style={styles.chip}>{sideLabel}</Text>}
         {durationLabel && <Text style={styles.chip}>{durationLabel}</Text>}
         {amountLabel && <Text style={styles.chip}>{amountLabel}</Text>}
@@ -74,6 +79,14 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#2E7D32',
     backgroundColor: '#E8F5E9',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
+  },
+  chipBreast: {
+    fontSize: 13,
+    color: '#AD1457',
+    backgroundColor: '#FCE4EC',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 999,

@@ -43,6 +43,10 @@
       "voice": "음성",
       "manual": "수동"
     },
+    "type": {
+      "formula": "분유",
+      "breast": "모유"
+    },
     "minutes": "{{count}}분",
     "ml": "{{count}}ml"
   },

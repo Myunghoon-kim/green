@@ -5,6 +5,7 @@
  *   - side: "left", "right", "both"
  *   - duration: "N min", "N minutes"
  *   - amount: "N ml", "Nml"
+ *   - type: "formula", "breast"/"breastfeeding"/"nursing"
  */
 
 import type { FeedingRecordInput } from '@/domain/models/FeedingRecord';
@@ -20,6 +21,9 @@ export class EnglishVoiceParser implements IVoiceParser {
     if (/\bleft\b/.test(text)) out.side = 'left';
     else if (/\bright\b/.test(text)) out.side = 'right';
     else if (/\bboth\b/.test(text)) out.side = 'both';
+
+    if (/\b(?:breast|nursing|breastfeed(?:ing)?)\b/.test(text)) out.feedingType = 'breast';
+    else if (/\bformula\b/.test(text)) out.feedingType = 'formula';
 
     const durationMatch = text.match(/(\d+)\s*(?:min|minutes?|mins)\b/);
     if (durationMatch?.[1]) {

@@ -43,6 +43,10 @@
       "voice": "Voice",
       "manual": "Manual"
     },
+    "type": {
+      "formula": "Formula",
+      "breast": "Breast"
+    },
     "minutes": "{{count}} min",
     "ml": "{{count}} ml"
   },
