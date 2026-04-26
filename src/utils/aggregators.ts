@@ -6,13 +6,37 @@
  */
 
 import type { FeedingRecord } from '@/domain/models/FeedingRecord';
-import { lastNDays, isInRange } from './dateHelpers';
+import { lastNDays, lastNWeeks, lastNMonths, isInRange } from './dateHelpers';
 
-export type DailyCount = {
-  label: string; // 'MM/DD' 형식
+/** 차트/카드에 그릴 구간 단위 집계 결과. period 에 관계없이 동일 shape. */
+export type PeriodBucket = {
+  label: string;
   count: number;
+  /** 해당 구간 총 수유량(ml) — 모든 타입 합산. */
   totalMl: number;
+  /** 분유 수유량(ml) 합. breast 는 제외. */
+  formulaMl: number;
   totalMinutes: number;
+};
+
+// DailyCount 는 기존 호출부 호환용 alias.
+export type DailyCount = PeriodBucket;
+
+const bucketize = (
+  records: readonly FeedingRecord[],
+  range: { start: number; end: number },
+  label: string,
+): PeriodBucket => {
+  const rs = records.filter((r) => isInRange(r.timestamp, range));
+  return {
+    label,
+    count: rs.length,
+    totalMl: rs.reduce((s, r) => s + (r.amountMl ?? 0), 0),
+    formulaMl: rs
+      .filter((r) => r.feedingType === 'formula')
+      .reduce((s, r) => s + (r.amountMl ?? 0), 0),
+    totalMinutes: rs.reduce((s, r) => s + (r.durationMinutes ?? 0), 0),
+  };
 };
 
 /**
@@ -23,20 +47,37 @@ export const aggregateByDay = (
   records: readonly FeedingRecord[],
   n: number = 7,
   now: number = Date.now(),
-): DailyCount[] => {
-  const ranges = lastNDays(n, now);
-
-  return ranges.map(({ start, end }) => {
-    const dayRecords = records.filter((r) => isInRange(r.timestamp, { start, end }));
-    const d = new Date(start);
-    return {
-      label: `${d.getMonth() + 1}/${d.getDate()}`,
-      count: dayRecords.length,
-      totalMl: dayRecords.reduce((sum, r) => sum + (r.amountMl ?? 0), 0),
-      totalMinutes: dayRecords.reduce((sum, r) => sum + (r.durationMinutes ?? 0), 0),
-    };
+): PeriodBucket[] =>
+  lastNDays(n, now).map((range) => {
+    const d = new Date(range.start);
+    return bucketize(records, range, `${d.getMonth() + 1}/${d.getDate()}`);
   });
-};
+
+/** 최근 N 주 집계. 라벨은 'MM/DD' (해당 주 시작일). */
+export const aggregateByWeek = (
+  records: readonly FeedingRecord[],
+  n: number = 8,
+  now: number = Date.now(),
+): PeriodBucket[] =>
+  lastNWeeks(n, now).map((range) => {
+    const d = new Date(range.start);
+    return bucketize(records, range, `${d.getMonth() + 1}/${d.getDate()}`);
+  });
+
+/** 최근 N 개월 집계. 라벨은 'YY/MM'. */
+export const aggregateByMonth = (
+  records: readonly FeedingRecord[],
+  n: number = 6,
+  now: number = Date.now(),
+): PeriodBucket[] =>
+  lastNMonths(n, now).map((range) => {
+    const d = new Date(range.start);
+    return bucketize(
+      records,
+      range,
+      `${String(d.getFullYear()).slice(2)}/${String(d.getMonth() + 1).padStart(2, '0')}`,
+    );
+  });
 
 /**
  * 평균 수유 간격 (분).

@@ -31,7 +31,20 @@
     "title": "Statistics",
     "daily": "Daily count",
     "weekly": "Weekly total",
-    "avgInterval": "Average interval"
+    "avgInterval": "Avg interval (min)",
+    "totalCount": "Total count",
+    "totalFormulaMl": "Formula (ml)",
+    "totalMinutes": "Duration (min)",
+    "period": {
+      "day": "Daily",
+      "week": "Weekly",
+      "month": "Monthly"
+    },
+    "metric": {
+      "count": "Count",
+      "totalMinutes": "Minutes",
+      "formulaMl": "Formula ml"
+    }
   },
   "feeding": {
     "side": {

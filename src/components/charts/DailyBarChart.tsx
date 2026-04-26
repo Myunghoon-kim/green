@@ -8,12 +8,12 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import type { DailyCount } from '@/utils/aggregators';
+import type { PeriodBucket } from '@/utils/aggregators';
 
 export type DailyBarChartProps = {
-  data: DailyCount[];
-  /** y 축 기준 (count | totalMl | totalMinutes) */
-  metric?: 'count' | 'totalMl' | 'totalMinutes';
+  data: PeriodBucket[];
+  /** y 축 기준 (count | totalMl | formulaMl | totalMinutes) */
+  metric?: 'count' | 'totalMl' | 'formulaMl' | 'totalMinutes';
 };
 
 const DailyBarChart: React.FC<DailyBarChartProps> = ({ data, metric = 'count' }) => {

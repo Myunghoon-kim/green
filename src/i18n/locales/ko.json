@@ -31,7 +31,20 @@
     "title": "통계",
     "daily": "일별 횟수",
     "weekly": "주별 총량",
-    "avgInterval": "평균 수유 간격"
+    "avgInterval": "평균 간격(분)",
+    "totalCount": "총 횟수",
+    "totalFormulaMl": "분유량(ml)",
+    "totalMinutes": "수유 시간(분)",
+    "period": {
+      "day": "일별",
+      "week": "주간별",
+      "month": "월별"
+    },
+    "metric": {
+      "count": "횟수",
+      "totalMinutes": "시간(분)",
+      "formulaMl": "분유량(ml)"
+    }
   },
   "feeding": {
     "side": {
