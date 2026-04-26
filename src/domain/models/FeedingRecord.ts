@@ -5,7 +5,11 @@
  * 저장소 직렬화는 toJSON() / fromJSON() 을 통해서만 수행한다.
  */
 
-import { v4 as uuid } from 'uuid';
+// Hermes(React Native)에는 crypto.getRandomValues 가 기본 제공되지 않아
+// uuid v4 가 런타임에 실패한다. 로컬 저장용 식별자는 암호학적 난수가 필요 없으므로
+// timestamp + Math.random 조합으로 충분한 유일성을 확보한다.
+const generateId = (): string =>
+  `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
 
 export type FeedingSide = 'left' | 'right' | 'both';
 export type FeedingSource = 'voice' | 'manual';
@@ -42,7 +46,7 @@ export class FeedingRecord {
   public readonly source: FeedingSource;
 
   constructor(input: FeedingRecordInput) {
-    this.id = input.id ?? uuid();
+    this.id = input.id ?? generateId();
     this.timestamp = input.timestamp ?? Date.now();
     this.durationMinutes = input.durationMinutes;
     this.amountMl = input.amountMl;
