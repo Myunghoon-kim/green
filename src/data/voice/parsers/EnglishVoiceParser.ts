@@ -11,11 +11,38 @@
 import type { FeedingRecordInput } from '@/domain/models/FeedingRecord';
 import type { IVoiceParser } from './IVoiceParser';
 
+const MISRECOGNITION_FIXES: ReadonlyArray<readonly [RegExp, string]> = [
+  [/\bmilliliter(s)?\b/gi, 'ml'],
+  [/\bmilli\s*liters?\b/gi, 'ml'],
+];
+
+const HINTS: readonly string[] = [
+  'feeding',
+  'formula',
+  'breast',
+  'breastfeeding',
+  'nursing',
+  'left',
+  'right',
+  'both',
+  'minutes',
+  'ml',
+];
+
 export class EnglishVoiceParser implements IVoiceParser {
   readonly locale = 'en-US';
+  readonly hints = HINTS;
+
+  normalize(transcript: string): string {
+    let text = transcript.trim();
+    for (const [from, to] of MISRECOGNITION_FIXES) {
+      text = text.replace(from, to);
+    }
+    return text;
+  }
 
   parse(transcript: string): Partial<FeedingRecordInput> {
-    const text = transcript.trim().toLowerCase();
+    const text = this.normalize(transcript).toLowerCase();
     const out: Partial<FeedingRecordInput> = {};
 
     if (/\bleft\b/.test(text)) out.side = 'left';

@@ -14,6 +14,14 @@ import {
 } from 'expo-speech-recognition';
 import { useTranslation } from 'react-i18next';
 
+export type UseSpeechRecordingOptions = {
+  /**
+   * SFSpeechRecognitionRequest.contextualStrings 로 전달되는 어휘 힌트.
+   * 도메인 단어를 넘겨주면 동음이의어 인식 정확도가 올라간다.
+   */
+  contextualStrings?: readonly string[];
+};
+
 export type UseSpeechRecordingReturn = {
   isRecording: boolean;
   transcript: string;
@@ -23,7 +31,9 @@ export type UseSpeechRecordingReturn = {
   reset: () => void;
 };
 
-export const useSpeechRecording = (): UseSpeechRecordingReturn => {
+export const useSpeechRecording = (
+  options: UseSpeechRecordingOptions = {},
+): UseSpeechRecordingReturn => {
   const { i18n } = useTranslation();
   const [isRecording, setIsRecording] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -43,11 +53,14 @@ export const useSpeechRecording = (): UseSpeechRecordingReturn => {
     setIsRecording(false);
   });
 
+  // 새 배열 참조가 매 렌더마다 들어와도 useCallback 가 재생성되지 않도록
+  // 내용 키로 메모이즈.
+  const hintsKey = (options.contextualStrings ?? []).join('|');
+
   const start = useCallback(async () => {
     setError(null);
     setTranscript('');
 
-    // 권한 요청 — 이미 승인되었으면 즉시 반환.
     const perm = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
     if (!perm.granted) {
       setError('permission-denied');
@@ -58,8 +71,14 @@ export const useSpeechRecording = (): UseSpeechRecordingReturn => {
       lang: i18n.language,
       interimResults: true,
       continuous: false,
+      // 도메인 어휘 힌트 — iOS Speech 가 우선 인식하도록 편향.
+      ...(options.contextualStrings && options.contextualStrings.length > 0
+        ? { contextualStrings: [...options.contextualStrings] }
+        : {}),
     });
-  }, [i18n.language]);
+    // hintsKey 가 동일하면 동일 옵션이라 의도적으로 함수 ID 안정화.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [i18n.language, hintsKey]);
 
   const stop = useCallback(() => {
     ExpoSpeechRecognitionModule.stop();

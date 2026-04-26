@@ -4,7 +4,9 @@ import type { FeedingRecordInput } from '../models/FeedingRecord';
 
 const makeStubParser = (result: Partial<FeedingRecordInput>): IVoiceParser => ({
   locale: 'ko-KR',
+  hints: [],
   parse: () => result,
+  normalize: (s) => s,
 });
 
 describe('ParseVoiceInputUseCase', () => {

@@ -7,7 +7,7 @@
  *   3. 상태/에러를 화면에 표시
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -19,20 +19,25 @@ import { VoiceParserFactory } from '@/data/voice/parsers/VoiceParserFactory';
 
 export default function HomeScreen() {
   const { t, i18n } = useTranslation();
-  const { isRecording, transcript, error, start, stop, reset } = useSpeechRecording();
+  // 현재 로케일 파서 — 인식 힌트 + 정규화 + 파싱 모두 담당.
+  const parser = useMemo(() => VoiceParserFactory.create(i18n.language), [i18n.language]);
+  const { isRecording, transcript, error, start, stop, reset } = useSpeechRecording({
+    contextualStrings: parser.hints,
+  });
   const addRecord = useFeedingStore((s) => s.addRecord);
 
+  // 화면에 보여줄 텍스트는 오인식 보정된 결과 (ex. "수육" → "수유").
+  const displayTranscript = transcript ? parser.normalize(transcript) : '';
+
   // 녹음이 끝나고 transcript 가 있으면 파싱 + 저장.
-  // 이 effect 는 홈 화면에서만 활성 — 다른 화면으로 이동하면 자동 해제.
   useEffect(() => {
     if (isRecording || !transcript) return;
 
-    const parser = VoiceParserFactory.create(i18n.language);
     const parseUseCase = new ParseVoiceInputUseCase();
     const input = parseUseCase.execute({ transcript, parser });
 
     addRecord(input).finally(reset);
-  }, [isRecording, transcript, i18n.language, addRecord, reset]);
+  }, [isRecording, transcript, parser, addRecord, reset]);
 
   const handlePress = () => {
     if (isRecording) stop();
@@ -49,7 +54,7 @@ export default function HomeScreen() {
       <View style={styles.body}>
         <VoiceButton isRecording={isRecording} onPress={handlePress} />
 
-        {!!transcript && <Text style={styles.transcript}>{transcript}</Text>}
+        {!!displayTranscript && <Text style={styles.transcript}>{displayTranscript}</Text>}
         {isRecording && <Text style={styles.status}>{t('home.listening')}</Text>}
         {error === 'permission-denied' && (
           <Text style={styles.error}>{t('errors.permissionDenied')}</Text>

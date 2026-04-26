@@ -65,6 +65,21 @@ describe('KoreanVoiceParser', () => {
     });
   });
 
+  describe('오인식 보정 (normalize + parse)', () => {
+    it('"수육" 은 "수유" 로 정규화된다', () => {
+      expect(parser.normalize('수육 15분')).toBe('수유 15분');
+    });
+
+    it('잘못된 방향 표기("외쪽","왼족") 는 "왼쪽" 으로 보정된다', () => {
+      expect(parser.parse('외쪽 10분').side).toBe('left');
+      expect(parser.parse('왼족 10분').side).toBe('left');
+    });
+
+    it('"왼쪽" 정상 입력은 보정 후에도 그대로 유지된다', () => {
+      expect(parser.normalize('왼쪽 15분')).toBe('왼쪽 15분');
+    });
+  });
+
   describe('엣지케이스', () => {
     it('빈 문자열은 빈 객체를 반환한다', () => {
       expect(parser.parse('')).toEqual({});

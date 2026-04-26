@@ -26,8 +26,9 @@ export class ParseVoiceInputUseCase extends SyncUseCase<
     const parsed = parser.parse(transcript);
     return {
       ...parsed,
-      // 원본 텍스트는 언제나 note 로 보존 — 파싱이 틀려도 사용자가 추후 수정 가능.
-      note: transcript,
+      // note 는 보정된 텍스트로 저장 — 사용자가 기록 카드에서 봤을 때 원래 의도가
+      // 드러나도록 ("수육 15분" 보다 "수유 15분" 이 의미가 분명).
+      note: parser.normalize(transcript),
       source: 'voice',
     };
   }
