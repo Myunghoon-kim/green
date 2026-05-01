@@ -18,6 +18,7 @@
   },
   "history": {
     "title": "History",
+    "timeline": "Last 7 days feeding times",
     "empty": "No records yet",
     "filters": {
       "today": "Today",
