@@ -15,6 +15,7 @@
 
 import type { FeedingRecordInput } from '@/domain/models/FeedingRecord';
 import type { IVoiceParser } from './IVoiceParser';
+import { extractKoreanTime } from './timeParsing';
 
 /**
  * 자주 관측되는 오인식 → 정답 매핑.
@@ -52,6 +53,16 @@ const HINTS: readonly string[] = [
   '양측',
   '분',
   '밀리리터',
+  // 시간 표현
+  '오전',
+  '오후',
+  '아침',
+  '저녁',
+  '새벽',
+  '시',
+  '분 전',
+  '시간 전',
+  '방금',
 ];
 
 export class KoreanVoiceParser implements IVoiceParser {
@@ -67,25 +78,32 @@ export class KoreanVoiceParser implements IVoiceParser {
   }
 
   parse(transcript: string): Partial<FeedingRecordInput> {
-    const text = this.normalize(transcript);
+    const normalized = this.normalize(transcript);
     const out: Partial<FeedingRecordInput> = {};
 
-    // 방향 (가장 먼저 매칭된 것 사용)
+    // 1) 시각/상대시간을 먼저 추출하고, 매칭 부분은 잔여 텍스트에서 제거.
+    //    "9시 30분" 의 "30분" 이 duration 으로 오인되지 않도록.
+    const { timestamp, residual } = extractKoreanTime(normalized);
+    if (timestamp !== undefined) out.timestamp = timestamp;
+
+    const text = residual;
+
+    // 2) 방향 (가장 먼저 매칭된 것 사용)
     if (/왼쪽|좌측/.test(text)) out.side = 'left';
     else if (/오른쪽|우측/.test(text)) out.side = 'right';
     else if (/양쪽|양측|둘\s*다/.test(text)) out.side = 'both';
 
-    // 수유 타입 — "모유"/"직수" → breast. "분유" 는 기본값이므로 명시돼도 같은 결과.
+    // 3) 수유 타입 — "모유"/"직수" → breast. "분유" 는 기본값이므로 명시돼도 같은 결과.
     if (/모유|직수/.test(text)) out.feedingType = 'breast';
     else if (/분유/.test(text)) out.feedingType = 'formula';
 
-    // 시간(duration) — "15분", "15 분" 등.
+    // 4) 시간(duration) — "15분", "15 분" 등.
     const durationMatch = text.match(/(\d+)\s*분/);
     if (durationMatch?.[1]) {
       out.durationMinutes = parseInt(durationMatch[1], 10);
     }
 
-    // 양 — ml / 밀리
+    // 5) 양 — ml / 밀리
     const amountMatch = text.match(/(\d+)\s*(?:ml|밀리)/i);
     if (amountMatch?.[1]) {
       out.amountMl = parseInt(amountMatch[1], 10);

@@ -10,6 +10,7 @@
 
 import type { FeedingRecordInput } from '@/domain/models/FeedingRecord';
 import type { IVoiceParser } from './IVoiceParser';
+import { extractEnglishTime } from './timeParsing';
 
 const MISRECOGNITION_FIXES: ReadonlyArray<readonly [RegExp, string]> = [
   [/\bmilliliter(s)?\b/gi, 'ml'],
@@ -27,6 +28,12 @@ const HINTS: readonly string[] = [
   'both',
   'minutes',
   'ml',
+  // time expressions
+  'am',
+  'pm',
+  'minutes ago',
+  'hours ago',
+  'just now',
 ];
 
 export class EnglishVoiceParser implements IVoiceParser {
@@ -42,8 +49,13 @@ export class EnglishVoiceParser implements IVoiceParser {
   }
 
   parse(transcript: string): Partial<FeedingRecordInput> {
-    const text = this.normalize(transcript).toLowerCase();
+    const normalized = this.normalize(transcript).toLowerCase();
     const out: Partial<FeedingRecordInput> = {};
+
+    const { timestamp, residual } = extractEnglishTime(normalized);
+    if (timestamp !== undefined) out.timestamp = timestamp;
+
+    const text = residual;
 
     if (/\bleft\b/.test(text)) out.side = 'left';
     else if (/\bright\b/.test(text)) out.side = 'right';
