@@ -20,6 +20,8 @@
   "history": {
     "title": "History",
     "timeline": "Last 7 days feeding times",
+    "today": "Today",
+    "yesterday": "Yesterday",
     "empty": "No records yet",
     "filters": {
       "today": "Today",

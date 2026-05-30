@@ -20,6 +20,8 @@
   "history": {
     "title": "기록 목록",
     "timeline": "최근 7일 수유 시각",
+    "today": "오늘",
+    "yesterday": "어제",
     "empty": "아직 기록이 없습니다",
     "filters": {
       "today": "오늘",
