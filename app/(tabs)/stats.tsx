@@ -8,9 +8,11 @@
 import React, { useState } from 'react';
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import DailyBarChart from '@/components/charts/DailyBarChart';
 import { useFeedingStats, type StatsPeriod } from '@/hooks/useFeedingStats';
+import { colors, radius, shadows, spacing } from '@/theme';
 
 type Metric = 'count' | 'totalMinutes' | 'formulaMl';
 
@@ -28,23 +30,29 @@ export default function StatsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.title}>{t('stats.title')}</Text>
+        <Animated.Text entering={FadeIn.duration(360)} style={styles.title}>
+          {t('stats.title')}
+        </Animated.Text>
 
-        <SegmentedControl
-          values={PERIODS}
-          selected={period}
-          onChange={setPeriod}
-          labelFor={(p) => t(`stats.period.${p}`)}
-        />
+        <Animated.View entering={FadeInDown.duration(360).delay(60)}>
+          <SegmentedControl
+            values={PERIODS}
+            selected={period}
+            onChange={setPeriod}
+            labelFor={(p) => t(`stats.period.${p}`)}
+          />
+        </Animated.View>
 
-        <View style={styles.summary}>
-          <SummaryItem label={t('stats.totalCount')} value={totalCount} />
-          <SummaryItem label={t('stats.avgInterval')} value={averageIntervalMinutes ?? '-'} />
-        </View>
-        <View style={styles.summary}>
-          <SummaryItem label={t('stats.totalFormulaMl')} value={totalFormulaMl} />
-          <SummaryItem label={t('stats.totalMinutes')} value={totalMinutes} />
-        </View>
+        <Animated.View entering={FadeInDown.duration(380).delay(120)}>
+          <View style={styles.summary}>
+            <SummaryItem label={t('stats.totalCount')} value={totalCount} />
+            <SummaryItem label={t('stats.avgInterval')} value={averageIntervalMinutes ?? '-'} />
+          </View>
+          <View style={styles.summary}>
+            <SummaryItem label={t('stats.totalFormulaMl')} value={totalFormulaMl} />
+            <SummaryItem label={t('stats.totalMinutes')} value={totalMinutes} />
+          </View>
+        </Animated.View>
 
         <Text style={styles.sectionTitle}>{t(`stats.period.${period}`)}</Text>
 
@@ -55,7 +63,9 @@ export default function StatsScreen() {
           labelFor={(m) => t(`stats.metric.${m}`)}
         />
 
-        <DailyBarChart data={buckets} metric={metric} />
+        <Animated.View entering={FadeIn.duration(420).delay(180)}>
+          <DailyBarChart data={buckets} metric={metric} />
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -102,54 +112,57 @@ const SummaryItem: React.FC<{ label: string; value: number | string }> = ({ labe
 );
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F5F5F5' },
-  scroll: { paddingVertical: 16 },
-  title: { fontSize: 24, fontWeight: '700', color: '#1B1B1B', paddingHorizontal: 16 },
+  container: { flex: 1, backgroundColor: colors.background },
+  scroll: { paddingVertical: spacing.lg },
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: colors.text,
+    paddingHorizontal: spacing.lg,
+    letterSpacing: -0.3,
+  },
   segmented: {
     flexDirection: 'row',
-    marginHorizontal: 16,
-    marginVertical: 12,
-    backgroundColor: '#E8E8E8',
-    borderRadius: 10,
+    marginHorizontal: spacing.lg,
+    marginVertical: spacing.md,
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: radius.md,
     padding: 4,
   },
   segment: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 9,
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: radius.sm + 2,
   },
   segmentActive: {
-    backgroundColor: '#fff',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 1 },
-    elevation: 2,
+    backgroundColor: colors.surface,
+    ...shadows.card,
   },
-  segmentText: { fontSize: 13, color: '#666' },
-  segmentTextActive: { color: '#2E7D32', fontWeight: '600' },
+  segmentText: { fontSize: 13, color: colors.textMuted, fontWeight: '500' },
+  segmentTextActive: { color: colors.primaryDark, fontWeight: '700' },
   summary: {
     flexDirection: 'row',
-    gap: 12,
-    paddingHorizontal: 16,
-    marginVertical: 6,
+    gap: spacing.md,
+    paddingHorizontal: spacing.lg,
+    marginVertical: spacing.xs + 2,
   },
   summaryItem: {
     flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
     alignItems: 'center',
+    ...shadows.card,
   },
-  summaryValue: { fontSize: 28, fontWeight: '700', color: '#2E7D32' },
-  summaryLabel: { fontSize: 12, color: '#666', marginTop: 4 },
+  summaryValue: { fontSize: 30, fontWeight: '800', color: colors.primaryDark, letterSpacing: -0.5 },
+  summaryLabel: { fontSize: 12, color: colors.textMuted, marginTop: spacing.xs + 2 },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    paddingHorizontal: 16,
-    marginBottom: 4,
-    marginTop: 12,
+    fontWeight: '700',
+    color: colors.text,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.xs,
+    marginTop: spacing.md,
   },
 });

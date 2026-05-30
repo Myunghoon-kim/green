@@ -12,6 +12,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { format } from 'date-fns';
 
 import type { FeedingRecord } from '@/domain/models/FeedingRecord';
+import { colors, radius, shadows, spacing } from '@/theme';
 
 export type TimelineChartProps = {
   records: readonly FeedingRecord[];
@@ -109,12 +110,13 @@ const DOT_SIZE = 8;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    marginHorizontal: 16,
-    marginBottom: 8,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.md,
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.sm,
+    ...shadows.card,
   },
   hoursRow: {
     flexDirection: 'row',
@@ -134,7 +136,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     fontSize: 10,
-    color: '#999',
+    color: colors.textSubtle,
     transform: [{ translateX: -4 }],
   },
   row: {
@@ -145,13 +147,14 @@ const styles = StyleSheet.create({
   dayLabel: {
     width: DAY_LABEL_WIDTH,
     fontSize: 11,
-    color: '#666',
+    color: colors.textMuted,
+    fontWeight: '500',
   },
   lane: {
     flex: 1,
     height: ROW_HEIGHT,
-    backgroundColor: '#F5F5F5',
-    borderRadius: 4,
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: radius.sm,
     position: 'relative',
     justifyContent: 'center',
   },
@@ -160,7 +163,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     width: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
   },
   dotBase: {
     position: 'absolute',
@@ -171,15 +174,15 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -DOT_SIZE / 2 }],
   },
   dotFormula: {
-    backgroundColor: '#2E7D32',
+    backgroundColor: colors.primary,
   },
   dotBreast: {
-    backgroundColor: '#AD1457',
+    backgroundColor: colors.accent,
   },
   legend: {
     flexDirection: 'row',
-    gap: 12,
-    marginTop: 8,
+    gap: spacing.md,
+    marginTop: spacing.sm,
     paddingLeft: DAY_LABEL_WIDTH,
   },
   legendItem: {
@@ -194,7 +197,7 @@ const styles = StyleSheet.create({
   },
   legendText: {
     fontSize: 11,
-    color: '#666',
+    color: colors.textMuted,
   },
 });
 
