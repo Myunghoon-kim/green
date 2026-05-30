@@ -26,6 +26,13 @@
           "microphonePermission": "Allow Green to use the microphone for voice recording.",
           "speechRecognitionPermission": "Allow Green to use speech recognition to transcribe your voice."
         }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#FFF8F0",
+          "resizeMode": "contain"
+        }
       ]
     ],
     "experiments": {
