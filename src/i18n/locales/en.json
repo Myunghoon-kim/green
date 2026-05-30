@@ -14,7 +14,8 @@
     "stopRecording": "Stop recording",
     "listening": "Listening...",
     "processing": "Processing...",
-    "saved": "Saved"
+    "saved": "Saved",
+    "recognized": "Voice recognized"
   },
   "history": {
     "title": "History",

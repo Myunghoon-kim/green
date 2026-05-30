@@ -14,7 +14,8 @@
     "stopRecording": "녹음 중지",
     "listening": "듣는 중...",
     "processing": "처리 중...",
-    "saved": "저장되었습니다"
+    "saved": "저장되었습니다",
+    "recognized": "음성 인식이 완료되었습니다"
   },
   "history": {
     "title": "기록 목록",
